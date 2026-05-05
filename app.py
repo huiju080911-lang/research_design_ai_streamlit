@@ -14,11 +14,162 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("탐구 설계 점검 AI")
-st.caption("탐구 주제를 입력하면 머신러닝 모델이 탐구 활동 유형을 추천하고, 탐구 설계 요소를 점검합니다.")
+# -----------------------------
+# 2. Custom CSS
+# -----------------------------
+st.markdown(
+    """
+    <style>
+    .main {
+        background: linear-gradient(180deg, #F8FAFF 0%, #FFFFFF 45%);
+    }
+
+    .block-container {
+        padding-top: 2.2rem;
+        padding-bottom: 3rem;
+        max-width: 1180px;
+    }
+
+    .hero-box {
+        padding: 2rem 2.2rem;
+        border-radius: 24px;
+        background: linear-gradient(135deg, #EEF4FF 0%, #F7F2FF 55%, #FFFFFF 100%);
+        border: 1px solid #E3E8F7;
+        box-shadow: 0 10px 28px rgba(62, 91, 180, 0.08);
+        margin-bottom: 1.4rem;
+    }
+
+    .hero-title {
+        font-size: 2.25rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: #172554;
+        margin-bottom: 0.45rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: #475569;
+        margin-bottom: 0;
+    }
+
+    .section-card {
+        padding: 1.3rem 1.4rem;
+        border-radius: 20px;
+        background: #FFFFFF;
+        border: 1px solid #E5E7EB;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+        margin: 1rem 0;
+    }
+
+    .mini-card {
+        padding: 1rem 1.1rem;
+        border-radius: 18px;
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        min-height: 105px;
+    }
+
+    .mini-title {
+        font-weight: 700;
+        color: #1E3A8A;
+        margin-bottom: 0.35rem;
+    }
+
+    .mini-text {
+        color: #475569;
+        font-size: 0.95rem;
+        line-height: 1.55;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.28rem 0.72rem;
+        border-radius: 999px;
+        background: #DBEAFE;
+        color: #1D4ED8;
+        font-size: 0.82rem;
+        font-weight: 700;
+        margin-right: 0.35rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .warning-note {
+        padding: 1rem 1.2rem;
+        border-radius: 16px;
+        background: #FFFBEB;
+        border: 1px solid #FDE68A;
+        color: #92400E;
+        line-height: 1.6;
+        margin-top: 0.7rem;
+    }
+
+    .good-note {
+        padding: 1rem 1.2rem;
+        border-radius: 16px;
+        background: #ECFDF5;
+        border: 1px solid #A7F3D0;
+        color: #065F46;
+        line-height: 1.6;
+        margin-top: 0.7rem;
+    }
+
+    div[data-testid="stMetric"] {
+        background: #FFFFFF;
+        border: 1px solid #E5E7EB;
+        padding: 1rem;
+        border-radius: 18px;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    div.stButton > button {
+        border-radius: 14px;
+        padding: 0.75rem 1.1rem;
+        font-weight: 700;
+        border: 0;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+    }
+
+    textarea, input {
+        border-radius: 14px !important;
+    }
+
+    .footer {
+        text-align: center;
+        color: #64748B;
+        font-size: 0.9rem;
+        padding-top: 1.4rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # -----------------------------
-# 2. Training data
+# 3. Hero
+# -----------------------------
+st.markdown(
+    """
+    <div class="hero-box">
+        <div class="hero-title">탐구 설계 점검 AI</div>
+        <p class="hero-subtitle">
+        탐구 주제를 입력하면 머신러닝 모델이 탐구 활동 유형을 추천하고,
+        탐구 대상·원인·결과·분석 기준·한계 요소를 점검해 주는 학습 보조 웹앱입니다.
+        </p>
+        <div style="margin-top:1rem;">
+            <span class="badge">Machine Learning</span>
+            <span class="badge">Research Design</span>
+            <span class="badge">Streamlit Cloud</span>
+            <span class="badge">No Report Ghostwriting</span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# -----------------------------
+# 4. Training data
 # -----------------------------
 train_topics = [
     # 설문조사
@@ -118,7 +269,7 @@ train_methods = (
 )
 
 # -----------------------------
-# 3. ML model
+# 5. ML model
 # -----------------------------
 @st.cache_resource
 def train_model():
@@ -132,16 +283,16 @@ def train_model():
 model = train_model()
 
 # -----------------------------
-# 4. Functions
+# 6. Functions
 # -----------------------------
 def get_reason(predicted_method):
     reasons = {
-        "설문조사": "이 주제는 사람의 인식, 태도, 만족도, 신뢰도 등을 확인하는 데 적합하므로 설문조사를 추천합니다.",
-        "실험": "이 주제는 조건을 바꾸고 결과 변화를 비교할 수 있으므로 실험 방법을 추천합니다.",
-        "사례 비교": "이 주제는 여러 사례의 공통점과 차이점을 비교하는 데 적합하므로 사례 비교를 추천합니다.",
-        "데이터 분석": "이 주제는 댓글, 설문 응답, 공공데이터 등 자료를 수집해 수치화할 수 있으므로 데이터 분석을 추천합니다.",
-        "문헌조사": "이 주제는 개념, 이론, 선행 연구를 정리하는 데 적합하므로 문헌조사를 추천합니다.",
-        "프로그램 개발": "이 주제는 특정 현상을 조사하는 것보다 사용자의 문제를 해결하는 프로그램이나 웹서비스를 제작하는 데 초점이 있으므로 프로그램 개발형 탐구를 추천합니다."
+        "설문조사": "사람의 인식, 태도, 만족도, 신뢰도 등을 확인하는 데 적합하므로 설문조사를 추천합니다.",
+        "실험": "조건을 바꾸고 결과 변화를 비교할 수 있으므로 실험 방법을 추천합니다.",
+        "사례 비교": "여러 사례의 공통점과 차이점을 비교하는 데 적합하므로 사례 비교를 추천합니다.",
+        "데이터 분석": "댓글, 설문 응답, 공공데이터 등 자료를 수집해 수치화할 수 있으므로 데이터 분석을 추천합니다.",
+        "문헌조사": "개념, 이론, 선행 연구를 정리하는 데 적합하므로 문헌조사를 추천합니다.",
+        "프로그램 개발": "사용자의 문제를 해결하는 프로그램이나 웹서비스 제작에 초점이 있으므로 프로그램 개발형 탐구를 추천합니다."
     }
     return reasons.get(predicted_method, "입력 내용을 바탕으로 가장 가까운 탐구 활동 유형을 추천했습니다.")
 
@@ -151,80 +302,58 @@ def design_check(topic, idea):
     feedback = []
     questions = []
 
-    target_words = [
-        "학생", "고등학생", "청소년", "교사", "사용자", "소비자",
-        "대중", "노인", "아동", "친구", "학습자", "사람"
+    checks = [
+        (
+            "탐구 대상",
+            ["학생", "고등학생", "청소년", "교사", "사용자", "소비자", "대중", "노인", "아동", "친구", "학습자", "사람"],
+            "탐구 대상이 드러나 있어 조사 범위나 사용자 범위를 설정하기 쉽습니다.",
+            "탐구 대상이 명확하지 않습니다.",
+            "누구를 대상으로 탐구하거나 사용할 프로그램인가요?"
+        ),
+        (
+            "원인·조건 요소",
+            ["사용", "빈도", "시간", "방식", "노출", "활용", "경험", "의존", "학습", "기술", "환경", "조건", "AI", "인공지능", "프로그램", "웹앱", "서비스", "도구", "시스템"],
+            "원인, 조건, 사용 기술 또는 프로그램 요소가 일부 드러납니다.",
+            "원인이나 조건에 해당하는 요소가 부족합니다.",
+            "무엇이 결과에 영향을 준다고 보고 있나요? 또는 어떤 기능이 핵심인가요?"
+        ),
+        (
+            "결과 요소",
+            ["영향", "변화", "차이", "태도", "인식", "만족도", "효율", "정확도", "사고력", "집중력", "불안", "신뢰", "결과", "도움", "개선", "구체화", "추천", "배포", "접근성"],
+            "탐구를 통해 확인하거나 개선하려는 결과 요소가 드러납니다.",
+            "결과로 무엇을 확인하거나 개선할지 부족합니다.",
+            "탐구를 통해 어떤 변화나 개선을 확인하고 싶은가요?"
+        ),
+        (
+            "관계 구조",
+            ["미치는 영향", "관계", "비교", "차이", "상관", "원인", "결과", "증가", "감소", "따라", "전후", "돕는", "지원", "해결"],
+            "두 요소 사이의 관계 또는 문제 해결 구조가 보입니다.",
+            "탐구 요소 간 관계가 명확하지 않습니다.",
+            "A와 B의 관계를 볼 것인지, 문제와 해결 도구의 관계를 볼 것인지 정해야 합니다."
+        ),
+        (
+            "분석·평가 기준",
+            ["빈도", "비율", "평균", "점수", "응답", "그래프", "표", "정확도", "오차", "전후", "집단", "분류", "상관", "통계", "추천", "점검", "기준", "사용성", "평가"],
+            "결과를 분석하거나 평가할 기준이 일부 포함되어 있습니다.",
+            "분석 또는 평가 기준이 부족합니다.",
+            "결과를 빈도, 비율, 평균, 사용자 평가, 정확도, 기능 작동 여부 중 어떤 방식으로 분석할 건가요?"
+        ),
+        (
+            "한계·윤리 고려",
+            ["한계", "오차", "편향", "표본", "응답자", "정확", "신뢰도", "개인차", "제한", "윤리", "개인정보", "오류", "비용", "접근성"],
+            "탐구의 한계나 윤리적 고려를 인식하고 있습니다.",
+            "탐구의 한계나 윤리적 고려가 아직 부족합니다.",
+            "표본 수, 응답 편향, 개인정보, 자료 신뢰성, 모델 오류 중 어떤 한계가 있을 수 있나요?"
+        ),
     ]
 
-    cause_words = [
-        "사용", "빈도", "시간", "방식", "노출", "활용", "경험",
-        "의존", "학습", "기술", "환경", "조건", "AI", "인공지능",
-        "프로그램", "웹앱", "서비스", "도구", "시스템"
-    ]
-
-    result_words = [
-        "영향", "변화", "차이", "태도", "인식", "만족도", "효율",
-        "정확도", "사고력", "집중력", "불안", "신뢰", "결과",
-        "도움", "개선", "구체화", "추천", "배포", "접근성"
-    ]
-
-    relation_words = [
-        "미치는 영향", "관계", "비교", "차이", "상관", "원인", "결과",
-        "증가", "감소", "따라", "전후", "돕는", "지원", "해결"
-    ]
-
-    analysis_words = [
-        "빈도", "비율", "평균", "점수", "응답", "그래프", "표",
-        "정확도", "오차", "전후", "집단", "분류", "상관", "통계",
-        "추천", "점검", "기준", "사용성", "평가"
-    ]
-
-    limit_words = [
-        "한계", "오차", "편향", "표본", "응답자", "정확", "신뢰도",
-        "개인차", "제한", "윤리", "개인정보", "오류", "비용", "접근성"
-    ]
-
-    if any(word in text for word in target_words):
-        score += 2
-        feedback.append(("탐구 대상", "탐구 대상이 드러나 있어 조사 범위나 사용자 범위를 설정하기 쉽습니다."))
-    else:
-        feedback.append(("탐구 대상", "탐구 대상이 명확하지 않습니다."))
-        questions.append("누구를 대상으로 탐구하거나 사용할 프로그램인가요?")
-
-    if any(word in text for word in cause_words):
-        score += 2
-        feedback.append(("원인·조건 요소", "원인, 조건, 사용 기술 또는 프로그램 요소가 일부 드러납니다."))
-    else:
-        feedback.append(("원인·조건 요소", "원인이나 조건에 해당하는 요소가 부족합니다."))
-        questions.append("무엇이 결과에 영향을 준다고 보고 있나요? 또는 어떤 기능이 핵심인가요?")
-
-    if any(word in text for word in result_words):
-        score += 2
-        feedback.append(("결과 요소", "탐구를 통해 확인하거나 개선하려는 결과 요소가 드러납니다."))
-    else:
-        feedback.append(("결과 요소", "결과로 무엇을 확인하거나 개선할지 부족합니다."))
-        questions.append("탐구를 통해 어떤 변화나 개선을 확인하고 싶은가요?")
-
-    if any(word in text for word in relation_words):
-        score += 2
-        feedback.append(("관계 구조", "두 요소 사이의 관계 또는 문제 해결 구조가 보입니다."))
-    else:
-        feedback.append(("관계 구조", "탐구 요소 간 관계가 명확하지 않습니다."))
-        questions.append("A와 B의 관계를 볼 것인지, 문제와 해결 도구의 관계를 볼 것인지 정해야 합니다.")
-
-    if any(word in text for word in analysis_words):
-        score += 2
-        feedback.append(("분석·평가 기준", "결과를 분석하거나 평가할 기준이 일부 포함되어 있습니다."))
-    else:
-        feedback.append(("분석·평가 기준", "분석 또는 평가 기준이 부족합니다."))
-        questions.append("결과를 빈도, 비율, 평균, 사용자 평가, 정확도, 기능 작동 여부 중 어떤 방식으로 분석할 건가요?")
-
-    if any(word in text for word in limit_words):
-        score += 2
-        feedback.append(("한계·윤리 고려", "탐구의 한계나 윤리적 고려를 인식하고 있습니다."))
-    else:
-        feedback.append(("한계·윤리 고려", "탐구의 한계나 윤리적 고려가 아직 부족합니다."))
-        questions.append("표본 수, 응답 편향, 개인정보, 자료 신뢰성, 모델 오류 중 어떤 한계가 있을 수 있나요?")
+    for name, words, good, bad, question in checks:
+        if any(word in text for word in words):
+            score += 2
+            feedback.append((name, "충족", good))
+        else:
+            feedback.append((name, "보완 필요", bad))
+            questions.append(question)
 
     if score >= 10:
         level = "우수"
@@ -274,34 +403,65 @@ def make_next_steps(predicted_method):
     return specific.get(predicted_method, []) + common
 
 # -----------------------------
-# 5. Sidebar
+# 7. Sidebar
 # -----------------------------
 with st.sidebar:
-    st.header("앱 설명")
-    st.write(
-        """
-        이 앱은 보고서를 대신 작성하지 않습니다.
-
-        사용자의 탐구 주제를 바탕으로:
-        - 탐구 활동 유형 추천
-        - 탐구 설계 요소 점검
-        - 보완 질문 제시
-        - 다음 단계 안내
-
-        를 제공합니다.
-        """
-    )
+    st.header("앱 소개")
+    st.write("보고서를 대신 작성하지 않고, 탐구 설계를 점검하는 학습 보조 도구입니다.")
     st.divider()
-    st.write("사용 기술")
+    st.subheader("사용 기술")
     st.write("- Python")
     st.write("- Streamlit")
     st.write("- scikit-learn")
     st.write("- CountVectorizer")
-    st.write("- Naive Bayes 분류 모델")
+    st.write("- Naive Bayes")
+    st.divider()
+    st.subheader("추천 유형")
+    st.write("설문조사, 실험, 사례 비교, 데이터 분석, 문헌조사, 프로그램 개발")
 
 # -----------------------------
-# 6. User input
+# 8. Intro cards
 # -----------------------------
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
+st.subheader("이 웹앱이 하는 일")
+
+col_a, col_b, col_c = st.columns(3)
+with col_a:
+    st.markdown(
+        """
+        <div class="mini-card">
+            <div class="mini-title">1. 유형 추천</div>
+            <div class="mini-text">입력한 탐구 주제를 머신러닝 모델로 분류하여 적절한 탐구 활동 유형을 추천합니다.</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+with col_b:
+    st.markdown(
+        """
+        <div class="mini-card">
+            <div class="mini-title">2. 설계 점검</div>
+            <div class="mini-text">대상, 원인, 결과, 관계, 분석 기준, 한계 요소가 포함되어 있는지 확인합니다.</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+with col_c:
+    st.markdown(
+        """
+        <div class="mini-card">
+            <div class="mini-title">3. 보완 질문</div>
+            <div class="mini-text">부족한 항목에 대해 사용자가 직접 생각해 볼 수 있는 질문을 제공합니다.</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+st.markdown('</div>', unsafe_allow_html=True)
+
+# -----------------------------
+# 9. User input
+# -----------------------------
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
 st.subheader("1. 탐구 주제 입력")
 
 topic = st.text_input(
@@ -316,9 +476,10 @@ idea = st.text_area(
 )
 
 run = st.button("탐구 설계 점검하기", type="primary")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # -----------------------------
-# 7. Output
+# 10. Output
 # -----------------------------
 if run:
     if not topic.strip() or not idea.strip():
@@ -330,29 +491,31 @@ if run:
 
         score, level, feedback, questions = design_check(topic, idea)
 
-        st.divider()
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.subheader("2. 머신러닝 기반 탐구 활동 유형 추천 결과")
 
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            st.metric("추천 유형", predicted_method)
-            st.metric("탐구 설계 점수", f"{score} / 12점")
-            st.metric("설계 수준", level)
+        col1, col2, col3 = st.columns(3)
+        col1.metric("추천 유형", predicted_method)
+        col2.metric("탐구 설계 점수", f"{score} / 12점")
+        col3.metric("설계 수준", level)
 
-        with col2:
-            prob_df = pd.DataFrame({
-                "탐구 활동 유형": classes,
-                "가능성": probabilities
-            }).sort_values("가능성", ascending=False)
-            st.dataframe(prob_df, use_container_width=True, hide_index=True)
-            st.bar_chart(prob_df.set_index("탐구 활동 유형"))
+        st.markdown(f'<div class="good-note"><b>추천 이유</b><br>{get_reason(predicted_method)}</div>', unsafe_allow_html=True)
 
-        st.info(get_reason(predicted_method))
+        prob_df = pd.DataFrame({
+            "탐구 활동 유형": classes,
+            "가능성": probabilities
+        }).sort_values("가능성", ascending=False)
 
-        st.divider()
+        st.write("탐구 활동 유형별 가능성")
+        st.dataframe(prob_df, use_container_width=True, hide_index=True)
+        st.bar_chart(prob_df.set_index("탐구 활동 유형"))
+
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.subheader("3. 탐구 설계 요소 점검 결과")
 
-        feedback_df = pd.DataFrame(feedback, columns=["점검 항목", "점검 결과"])
+        feedback_df = pd.DataFrame(feedback, columns=["점검 항목", "상태", "점검 결과"])
         st.dataframe(feedback_df, use_container_width=True, hide_index=True)
 
         st.subheader("4. 보완 질문")
@@ -366,7 +529,9 @@ if run:
         for step in make_next_steps(predicted_method):
             st.write("- " + step)
 
-        st.divider()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.subheader("6. 탐구 설계표 요약")
 
         summary_df = pd.DataFrame([
@@ -388,7 +553,7 @@ if run:
 탐구 설계 수준: {level}
 
 [세부 점검 의견]
-""" + "\n".join([f"- {item[0]}: {item[1]}" for item in feedback]) + """
+""" + "\n".join([f"- {item[0]}({item[1]}): {item[2]}" for item in feedback]) + """
 
 [보완 질문]
 """ + ("\n".join([f"- {q}" for q in questions]) if questions else "- 현재 탐구 설계가 비교적 잘 구성되어 있습니다.") + """
@@ -403,8 +568,19 @@ if run:
             mime="text/plain"
         )
 
-else:
-    st.info("탐구 주제와 현재 생각을 입력한 뒤, '탐구 설계 점검하기' 버튼을 눌러 주세요.")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-st.divider()
-st.caption("주의: 이 앱은 생성형 AI가 보고서를 대신 작성하는 도구가 아니라, 탐구 설계 요소를 점검하고 보완 질문을 제공하는 학습 보조 도구입니다.")
+else:
+    st.markdown(
+        '<div class="warning-note">탐구 주제와 현재 생각을 입력한 뒤, <b>탐구 설계 점검하기</b> 버튼을 눌러 주세요.</div>',
+        unsafe_allow_html=True
+    )
+
+st.markdown(
+    """
+    <div class="footer">
+    이 앱은 생성형 AI가 보고서를 대신 작성하는 도구가 아니라, 탐구 설계 요소를 점검하고 보완 질문을 제공하는 학습 보조 도구입니다.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
